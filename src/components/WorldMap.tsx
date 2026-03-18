@@ -49,12 +49,12 @@ function WorldMapInner({
                   }}
                   fill={
                     isSelected
-                      ? "#2563eb"
+                      ? "#3b82f6"
                       : hasMissions
-                      ? "#93c5fd"
-                      : "#e5e7eb"
+                      ? "#1e3a5f"
+                      : "#1f2937"
                   }
-                  stroke="#fff"
+                  stroke="#374151"
                   strokeWidth={0.5}
                   style={{
                     default: { outline: "none" },
@@ -62,9 +62,9 @@ function WorldMapInner({
                       outline: "none",
                       fill: hasMissions
                         ? isSelected
-                          ? "#1d4ed8"
-                          : "#60a5fa"
-                        : "#d1d5db",
+                          ? "#2563eb"
+                          : "#2563eb80"
+                        : "#374151",
                     },
                     pressed: { outline: "none" },
                   }}
