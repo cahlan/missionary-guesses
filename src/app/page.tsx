@@ -1,20 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { US_MISSIONS, WORLD_MISSIONS } from "@/lib/missions";
 import { getMissionsByState, getMissionsByCountry } from "@/lib/mission-regions";
 import { USMap } from "@/components/USMap";
 import { WorldMap } from "@/components/WorldMap";
 
-type Screen = "home" | "select" | "results";
+type Screen = "home" | "select";
 type MapType = "us" | "world";
 
-interface GuessCount {
-  missionName: string;
-  count: number;
-}
-
 export default function Home() {
+  const router = useRouter();
   const [screen, setScreen] = useState<Screen>("home");
   const [mapType, setMapType] = useState<MapType>("us");
   const [search, setSearch] = useState("");
@@ -22,8 +20,6 @@ export default function Home() {
   const [selected, setSelected] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [results, setResults] = useState<GuessCount[]>([]);
-  const [totalGuesses, setTotalGuesses] = useState(0);
 
   const missionsByState = useMemo(() => getMissionsByState(), []);
   const missionsByCountry = useMemo(() => getMissionsByCountry(), []);
@@ -52,19 +48,6 @@ export default function Home() {
     ? baseMissions.filter((m) => m.toLowerCase().includes(search.toLowerCase()))
     : baseMissions;
 
-  const fetchResults = useCallback(async () => {
-    const res = await fetch("/api/guesses");
-    const data: GuessCount[] = await res.json();
-    setResults(data);
-    setTotalGuesses(data.reduce((sum, g) => sum + g.count, 0));
-  }, []);
-
-  useEffect(() => {
-    if (screen === "results") {
-      fetchResults();
-    }
-  }, [screen, fetchResults]);
-
   async function submitGuess() {
     if (!selected) return;
     setSubmitting(true);
@@ -78,7 +61,7 @@ export default function Home() {
     setSelected(null);
     setSearch("");
     setSelectedRegion(null);
-    setScreen("results");
+    router.push("/results");
   }
 
   // Home screen
@@ -126,12 +109,12 @@ export default function Home() {
           </button>
         </div>
 
-        <button
-          onClick={() => setScreen("results")}
-          className="mt-12 text-blue-600 hover:text-blue-800 underline text-sm cursor-pointer"
+        <Link
+          href="/results"
+          className="mt-12 text-blue-600 hover:text-blue-800 underline text-sm"
         >
           View current guesses
-        </button>
+        </Link>
       </div>
     );
   }
@@ -260,55 +243,5 @@ export default function Home() {
     );
   }
 
-  // Results screen
-  return (
-    <div className="min-h-screen flex flex-col p-6 max-w-2xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          onClick={() => setScreen("home")}
-          className="text-gray-500 hover:text-gray-900 text-sm cursor-pointer"
-        >
-          ← Back
-        </button>
-        <h1 className="text-2xl font-bold text-gray-900">Guesses So Far</h1>
-      </div>
-
-      <div className="bg-blue-50 rounded-xl p-4 mb-6 text-center">
-        <p className="text-3xl font-bold text-blue-800">{totalGuesses}</p>
-        <p className="text-blue-600 text-sm">total guesses</p>
-      </div>
-
-      <div className="flex-1 overflow-y-auto rounded-xl border border-gray-200 bg-white">
-        {results.length === 0 ? (
-          <p className="p-8 text-gray-500 text-center">
-            No guesses yet. Be the first!
-          </p>
-        ) : (
-          results.map((r, i) => (
-            <div
-              key={r.missionName}
-              className="flex items-center justify-between px-4 py-3 border-b border-gray-100 last:border-b-0"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-gray-400 text-sm w-6 text-right">
-                  {i + 1}.
-                </span>
-                <span className="text-gray-800">{r.missionName}</span>
-              </div>
-              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
-                {r.count}
-              </span>
-            </div>
-          ))
-        )}
-      </div>
-
-      <button
-        onClick={() => setScreen("home")}
-        className="mt-6 w-full px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
-      >
-        Make a Guess
-      </button>
-    </div>
-  );
+  return null;
 }
