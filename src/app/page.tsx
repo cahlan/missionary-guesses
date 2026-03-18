@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { US_MISSIONS, WORLD_MISSIONS } from "@/lib/missions";
 import { getMissionsByState, getMissionsByCountry } from "@/lib/mission-regions";
 import { USMap } from "@/components/USMap";
@@ -68,6 +69,16 @@ export default function Home() {
   if (screen === "home") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6">
+        <div className="w-32 h-32 rounded-full overflow-hidden mb-6 border-2 border-gray-700">
+          <Image
+            src="/cohen.jpg"
+            alt="Cohen"
+            width={128}
+            height={128}
+            className="w-full h-full object-cover object-top"
+            priority
+          />
+        </div>
         <h1 className="text-4xl font-bold text-white mb-2 text-center">
           Cohen&apos;s Mission Call
         </h1>
