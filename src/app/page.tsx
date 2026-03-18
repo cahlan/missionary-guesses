@@ -69,12 +69,12 @@ export default function Home() {
   if (screen === "home") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6">
-        <div className="w-32 h-32 rounded-full overflow-hidden mb-6 border-2 border-gray-700">
+        <div className="w-48 h-48 rounded-full overflow-hidden mb-6 border-2 border-gray-700">
           <Image
             src="/cohen.jpg"
             alt="Cohen"
-            width={128}
-            height={128}
+            width={192}
+            height={192}
             className="w-full h-full object-cover object-top"
             priority
           />
