@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
+import { HeatMap } from "@/components/HeatMap";
+import { aggregateGuessesByTopoCountry } from "@/lib/mission-regions";
 
 interface GuessCount {
   missionName: string;
@@ -26,8 +28,13 @@ export default function ResultsPage() {
     fetchResults();
   }, [fetchResults]);
 
+  const countsByTopoCountry = useMemo(
+    () => aggregateGuessesByTopoCountry(results),
+    [results]
+  );
+
   return (
-    <div className="min-h-screen flex flex-col p-6 max-w-2xl mx-auto">
+    <div className="min-h-screen flex flex-col p-6 max-w-4xl mx-auto">
       <div className="flex items-center gap-4 mb-6">
         <Link
           href="/"
@@ -43,6 +50,14 @@ export default function ResultsPage() {
         <p className="text-blue-600 text-sm">total guesses</p>
       </div>
 
+      {/* Heatmap */}
+      {!loading && results.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden p-4">
+          <HeatMap countsByTopoCountry={countsByTopoCountry} />
+        </div>
+      )}
+
+      {/* Results list */}
       <div className="flex-1 overflow-y-auto rounded-xl border border-gray-200 bg-white">
         {loading ? (
           <p className="p-8 text-gray-500 text-center">Loading...</p>

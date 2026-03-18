@@ -109,7 +109,7 @@ export const TOPO_TO_STATE: Record<string, string> = {
 
 // Mapping from Natural Earth country names to our country keys
 export const TOPO_TO_COUNTRY: Record<string, string> = {
-  "United States of America": "",  // skip US on world map
+  "United States of America": "United States",
   "Argentina": "Argentina",
   "Australia": "Australia",
   "Austria": "Austria",
@@ -223,3 +223,45 @@ export const TOPO_TO_COUNTRY: Record<string, string> = {
   "Republic of Congo": "Congo",
   "Kiribati": "Kiribati",
 };
+
+// Reverse lookup: given a mission name, return the TOPO_TO_COUNTRY value
+// US missions → "United States", world missions → their country key
+export function missionToCountryKey(missionName: string): string {
+  // Check if it's a US mission
+  for (const state of US_STATE_NAMES) {
+    if (missionName.startsWith(state + " ") || missionName === state) {
+      return "United States";
+    }
+  }
+  // World mission — find the country
+  const country = getCountryFromMission(missionName);
+  // Now reverse-lookup: find which TOPO key maps to this country
+  // We need the TOPO_TO_COUNTRY *value* that matches
+  return country;
+}
+
+// Aggregate guess counts into a map of TOPO country name → total count
+export function aggregateGuessesByTopoCountry(
+  guesses: { missionName: string; count: number }[]
+): Record<string, number> {
+  // Build reverse map: our country key → topo name(s)
+  const countryKeyToTopo: Record<string, string[]> = {};
+  for (const [topo, key] of Object.entries(TOPO_TO_COUNTRY)) {
+    if (!key) continue;
+    if (!countryKeyToTopo[key]) countryKeyToTopo[key] = [];
+    countryKeyToTopo[key].push(topo);
+  }
+
+  const result: Record<string, number> = {};
+  for (const { missionName, count } of guesses) {
+    const countryKey = missionToCountryKey(missionName);
+    // Find topo names for this country key
+    const topoNames = countryKeyToTopo[countryKey];
+    if (topoNames) {
+      for (const topo of topoNames) {
+        result[topo] = (result[topo] || 0) + count;
+      }
+    }
+  }
+  return result;
+}
