@@ -49,9 +49,9 @@ function WorldMapInner({
                   }}
                   fill={
                     isSelected
-                      ? "#3b82f6"
+                      ? "#34d399"
                       : hasMissions
-                      ? "#1e3a5f"
+                      ? "#065f46"
                       : "#1f2937"
                   }
                   stroke="#374151"
@@ -62,8 +62,8 @@ function WorldMapInner({
                       outline: "none",
                       fill: hasMissions
                         ? isSelected
-                          ? "#2563eb"
-                          : "#2563eb80"
+                          ? "#6ee7b7"
+                          : "#10b981"
                         : "#374151",
                     },
                     pressed: { outline: "none" },
