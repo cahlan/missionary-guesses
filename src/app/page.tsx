@@ -9,6 +9,10 @@ import { getMissionsByState, getMissionsByCountry } from "@/lib/mission-regions"
 import { USMap } from "@/components/USMap";
 import { WorldMap } from "@/components/WorldMap";
 
+function stripAccents(str: string): string {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 type Screen = "home" | "select";
 type MapType = "us" | "world";
 
@@ -46,7 +50,9 @@ export default function Home() {
 
   const baseMissions = regionMissions || missions;
   const filtered = search
-    ? baseMissions.filter((m) => m.toLowerCase().includes(search.toLowerCase()))
+    ? baseMissions.filter((m) =>
+        stripAccents(m.toLowerCase()).includes(stripAccents(search.toLowerCase()))
+      )
     : baseMissions;
 
   async function submitGuess() {
