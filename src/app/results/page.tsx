@@ -16,7 +16,6 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState(true);
 
   const fetchResults = useCallback(async () => {
-    setLoading(true);
     const res = await fetch("/api/guesses");
     const data: GuessCount[] = await res.json();
     setResults(data);
@@ -26,6 +25,8 @@ export default function ResultsPage() {
 
   useEffect(() => {
     fetchResults();
+    const interval = setInterval(fetchResults, 5000);
+    return () => clearInterval(interval);
   }, [fetchResults]);
 
   const countsByTopoCountry = useMemo(
