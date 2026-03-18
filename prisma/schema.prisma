@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Guess {
+  id          String   @id @default(cuid())
+  missionName String
+  createdAt   DateTime @default(now())
+
+  @@index([missionName])
+}
