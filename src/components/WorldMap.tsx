@@ -57,9 +57,10 @@ function WorldMapInner({
                   stroke="#374151"
                   strokeWidth={0.5}
                   style={{
-                    default: { outline: "none" },
+                    default: { outline: "none", cursor: hasMissions ? "pointer" : "default" },
                     hover: {
                       outline: "none",
+                      cursor: hasMissions ? "pointer" : "default",
                       fill: hasMissions
                         ? isSelected
                           ? "#6ee7b7"
