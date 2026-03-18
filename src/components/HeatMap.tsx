@@ -18,11 +18,11 @@ interface HeatMapProps {
 function getHeatColor(count: number, maxCount: number): string {
   if (count === 0) return "#1f2937";
   const intensity = Math.min(count / maxCount, 1);
-  if (intensity < 0.2) return "#a7f3d0"; // emerald-200
-  if (intensity < 0.4) return "#6ee7b7"; // emerald-300
+  if (intensity < 0.2) return "#059669"; // emerald-600
+  if (intensity < 0.4) return "#10b981"; // emerald-500
   if (intensity < 0.6) return "#34d399"; // emerald-400
-  if (intensity < 0.8) return "#10b981"; // emerald-500
-  return "#059669";                       // emerald-600
+  if (intensity < 0.8) return "#6ee7b7"; // emerald-300
+  return "#a7f3d0";                       // emerald-200
 }
 
 function HeatMapInner({ countsByTopoCountry }: HeatMapProps) {
@@ -74,7 +74,7 @@ function HeatMapInner({ countsByTopoCountry }: HeatMapProps) {
       <div className="flex items-center justify-center gap-1 mt-2 text-xs text-gray-500">
         <span>Fewer</span>
         <div className="flex gap-0.5">
-          {["#a7f3d0", "#6ee7b7", "#34d399", "#10b981", "#059669"].map((c) => (
+          {["#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0"].map((c) => (
             <div
               key={c}
               className="w-6 h-3 rounded-sm"
