@@ -69,7 +69,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6">
         <h1 className="text-4xl font-bold text-white mb-2 text-center">
-          Mission Call Guesses
+          Cohen&apos;s Mission Call
         </h1>
         <p className="text-lg text-gray-400 mb-12 text-center">
           Where do you think he&apos;ll be called to serve?
