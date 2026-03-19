@@ -109,8 +109,10 @@ export default function ResultsPage() {
       <div className="flex-1 flex flex-col lg:flex-row gap-4 min-h-0">
         {/* Heatmap */}
         {!loading && results.length > 0 && (
-          <div className="lg:w-1/2 bg-gray-900 rounded-xl border border-gray-800 overflow-hidden p-4 flex items-center shrink-0 lg:shrink">
-            <HeatMap countsByTopoCountry={countsByTopoCountry} />
+          <div className="lg:w-1/2 bg-gray-900 rounded-xl border border-gray-800 overflow-hidden p-4 flex flex-col justify-center shrink-0 lg:shrink">
+            <div className="w-full">
+              <HeatMap countsByTopoCountry={countsByTopoCountry} />
+            </div>
           </div>
         )}
 
