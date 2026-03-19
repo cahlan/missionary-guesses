@@ -125,7 +125,7 @@ export default function ResultsPage() {
       <div className="flex-1 flex flex-col lg:flex-row gap-4 min-h-0">
         {/* Heatmap */}
         {!loading && results.length > 0 && (
-          <div className="lg:w-1/2 bg-gray-900 rounded-xl border border-gray-800 overflow-hidden p-4 flex flex-col justify-center shrink-0 lg:shrink">
+          <div className="lg:w-[70%] bg-gray-900 rounded-xl border border-gray-800 overflow-hidden p-4 flex flex-col justify-center shrink-0 lg:shrink">
             <div className="w-full">
               <HeatMap countsByTopoCountry={countsByTopoCountry} />
             </div>
@@ -133,7 +133,7 @@ export default function ResultsPage() {
         )}
 
         {/* Results list — aggregated by country */}
-        <div className="lg:w-1/2 flex-1 overflow-y-auto rounded-xl border border-gray-800 bg-gray-900 min-h-0">
+        <div className="lg:w-[30%] flex-1 overflow-y-auto rounded-xl border border-gray-800 bg-gray-900 min-h-0">
           {loading ? (
             <p className="p-8 text-gray-500 text-center">Loading...</p>
           ) : countryResults.length === 0 ? (
