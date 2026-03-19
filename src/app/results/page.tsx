@@ -114,7 +114,7 @@ export default function ResultsPage() {
           <Link href="/" className="text-gray-500 hover:text-gray-300 text-sm">
             ← Back
           </Link>
-          <h1 className="text-2xl font-bold text-white">Guesses So Far</h1>
+          <h1 className="text-2xl font-bold text-white">Cohen&apos;s Mission Call</h1>
         </div>
         <div className="flex items-center gap-4">
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-6 py-2 text-center">
