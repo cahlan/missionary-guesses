@@ -240,6 +240,20 @@ export function missionToCountryKey(missionName: string): string {
   return country;
 }
 
+// Aggregate guess counts by country/region for the results list
+export function aggregateGuessesByCountry(
+  guesses: { missionName: string; count: number }[]
+): { country: string; count: number }[] {
+  const byCountry: Record<string, number> = {};
+  for (const { missionName, count } of guesses) {
+    const country = missionToCountryKey(missionName);
+    byCountry[country] = (byCountry[country] || 0) + count;
+  }
+  return Object.entries(byCountry)
+    .map(([country, count]) => ({ country, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
 // Aggregate guess counts into a map of TOPO country name → total count
 export function aggregateGuessesByTopoCountry(
   guesses: { missionName: string; count: number }[]

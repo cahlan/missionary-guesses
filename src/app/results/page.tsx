@@ -3,10 +3,18 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
 import { HeatMap } from "@/components/HeatMap";
-import { aggregateGuessesByTopoCountry } from "@/lib/mission-regions";
+import {
+  aggregateGuessesByTopoCountry,
+  aggregateGuessesByCountry,
+} from "@/lib/mission-regions";
 
 interface GuessCount {
   missionName: string;
+  count: number;
+}
+
+interface CountryCount {
+  country: string;
   count: number;
 }
 
@@ -14,44 +22,47 @@ export default function ResultsPage() {
   const [results, setResults] = useState<GuessCount[]>([]);
   const [totalGuesses, setTotalGuesses] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [changedMissions, setChangedMissions] = useState<Set<string>>(new Set());
-  const [newMissions, setNewMissions] = useState<Set<string>>(new Set());
-  const prevResultsRef = useRef<Map<string, number>>(new Map());
+  const [changedCountries, setChangedCountries] = useState<Set<string>>(new Set());
+  const [newCountries, setNewCountries] = useState<Set<string>>(new Set());
+  const prevCountryRef = useRef<Map<string, number>>(new Map());
 
   const fetchResults = useCallback(async () => {
     const res = await fetch("/api/guesses");
     const data: GuessCount[] = await res.json();
 
-    const prevMap = prevResultsRef.current;
+    // Aggregate by country for change detection
+    const countryData = aggregateGuessesByCountry(data);
+    const prevMap = prevCountryRef.current;
+
     if (prevMap.size > 0) {
       const changed = new Set<string>();
       const brand = new Set<string>();
 
-      for (const item of data) {
-        const prevCount = prevMap.get(item.missionName);
+      for (const item of countryData) {
+        const prevCount = prevMap.get(item.country);
         if (prevCount === undefined) {
-          brand.add(item.missionName);
-          changed.add(item.missionName);
+          brand.add(item.country);
+          changed.add(item.country);
         } else if (prevCount !== item.count) {
-          changed.add(item.missionName);
+          changed.add(item.country);
         }
       }
 
       if (changed.size > 0) {
-        setChangedMissions(changed);
-        setNewMissions(brand);
+        setChangedCountries(changed);
+        setNewCountries(brand);
         setTimeout(() => {
-          setChangedMissions(new Set());
-          setNewMissions(new Set());
+          setChangedCountries(new Set());
+          setNewCountries(new Set());
         }, 1500);
       }
     }
 
     const newMap = new Map<string, number>();
-    for (const item of data) {
-      newMap.set(item.missionName, item.count);
+    for (const item of countryData) {
+      newMap.set(item.country, item.count);
     }
-    prevResultsRef.current = newMap;
+    prevCountryRef.current = newMap;
 
     setResults(data);
     setTotalGuesses(data.reduce((sum, g) => sum + g.count, 0));
@@ -66,6 +77,11 @@ export default function ResultsPage() {
 
   const countsByTopoCountry = useMemo(
     () => aggregateGuessesByTopoCountry(results),
+    [results]
+  );
+
+  const countryResults: CountryCount[] = useMemo(
+    () => aggregateGuessesByCountry(results),
     [results]
   );
 
@@ -116,22 +132,22 @@ export default function ResultsPage() {
           </div>
         )}
 
-        {/* Results list */}
+        {/* Results list — aggregated by country */}
         <div className="lg:w-1/2 flex-1 overflow-y-auto rounded-xl border border-gray-800 bg-gray-900 min-h-0">
           {loading ? (
             <p className="p-8 text-gray-500 text-center">Loading...</p>
-          ) : results.length === 0 ? (
+          ) : countryResults.length === 0 ? (
             <p className="p-8 text-gray-500 text-center">
               No guesses yet. Be the first!
             </p>
           ) : (
-            results.map((r, i) => {
-              const isNew = newMissions.has(r.missionName);
-              const isChanged = changedMissions.has(r.missionName);
+            countryResults.map((r, i) => {
+              const isNew = newCountries.has(r.country);
+              const isChanged = changedCountries.has(r.country);
 
               return (
                 <div
-                  key={r.missionName}
+                  key={r.country}
                   className={`flex items-center justify-between px-4 py-3 border-b border-gray-800 last:border-b-0 transition-all ${
                     isNew ? "animate-slide-in" : ""
                   } ${isChanged ? "animate-flash-row" : ""}`}
@@ -141,7 +157,7 @@ export default function ResultsPage() {
                       {i + 1}.
                     </span>
                     <span className={`${isChanged ? "text-emerald-400" : "text-gray-300"} transition-colors duration-1000`}>
-                      {r.missionName}
+                      {r.country}
                     </span>
                   </div>
                   <span
