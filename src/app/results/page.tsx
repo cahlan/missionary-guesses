@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
+import { QRCodeSVG } from "qrcode.react";
 import { HeatMap } from "@/components/HeatMap";
 import {
   aggregateGuessesByTopoCountry,
@@ -115,9 +116,24 @@ export default function ResultsPage() {
           </Link>
           <h1 className="text-2xl font-bold text-white">Guesses So Far</h1>
         </div>
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-6 py-2 text-center">
-          <span className="text-2xl font-bold text-blue-400">{totalGuesses}</span>
-          <span className="text-blue-400/70 text-sm ml-2">total</span>
+        <div className="flex items-center gap-4">
+          <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-6 py-2 text-center">
+            <span className="text-2xl font-bold text-blue-400">{totalGuesses}</span>
+            <span className="text-blue-400/70 text-sm ml-2">total</span>
+          </div>
+          <div className="hidden lg:flex items-center gap-3 bg-gray-900 border border-gray-800 rounded-xl px-4 py-2">
+            <QRCodeSVG
+              value="https://missionary-guesses.vercel.app/"
+              size={48}
+              bgColor="transparent"
+              fgColor="#e5e7eb"
+              level="M"
+            />
+            <div className="text-xs text-gray-400 leading-tight">
+              <p className="font-semibold text-gray-300">Scan to guess!</p>
+              <p>missionary-guesses.vercel.app</p>
+            </div>
+          </div>
         </div>
       </div>
 
